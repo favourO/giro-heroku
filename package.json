@@ -1,0 +1,29 @@
+{
+  "name": "giro",
+  "version": "1.0.0",
+  "description": "Investment management Platform",
+  "main": "server.js",
+  "scripts": {
+    "prod": "NODE_ENV=production node server",
+    "dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/favourO"
+  },
+  "keywords": [
+    "GIRO"
+  ],
+  "author": "OJIAKU FAVOUR",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.15",
+    "nodemailer": "^6.6.2"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "nodemon": "^2.0.7"
+  }
+}
