@@ -1,10 +1,12 @@
-const { register } = require('../controller/auth');
+const { createAccount, verify, login } = require('../controller/auth');
 const express = require('express');
 
 const router = express.Router();
 
 router
-    .post('/register', register);
+    .post('/register', createAccount)
+    .post('/verify', verify)
+    .post('/login', login);
 
 
 

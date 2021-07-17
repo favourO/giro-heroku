@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
-    name: {
+    username: {
         type: String,
         required: [true, 'Please add a name']
     },
@@ -15,32 +16,27 @@ const UserSchema = new mongoose.Schema({
             'Please add a valid email',
         ],
     },
+    phone: {
+      type: String,
+      unique: true,
+      required: [true, 'Please add a phone number']
+    },
     role: {
-        type: String,
-        enum: ['admin', 'buyer', 'merchant', 'moderator'],
-        default: 'buyer',
+      type: String,
+      default: 'buyer',
     },
     password: {
       type: String,
       required: [true, 'Please add a password'],
       minlength: 8,
-      select: false,
-      // match: [
-      //   /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
-      //   'Password should contain Capital letters, special characters, numbers'
-      // ],
-      default: 'buyer'
+      select: false
     },
     status: {
       type: String,
-      enum: ['Pending', 'Verified'],
+      enum: ['Pending', 'Verified', 'Veteran', 'Legend'],
       default: 'Pending'
     },
-    verificationCode: {
-      type: String,
-      unique: true
-    },
-    verificationCodeExpire: Date,
+    
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     confirmEmailToken: String,
@@ -70,11 +66,23 @@ UserSchema.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, salt);
 })
 
-UserSchema.methods.getConfirmationCode = function() {
-  const verificationCode = Math.floor(100000 + Math.random() * 900000);
-
-  this.verificationCodeExpire = Date.now() + 15 * 60 * 1000;
-  return verificationCode;
+// Sign JWT and return
+UserSchema.methods.getSignedJwtToken = function() {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE
+  })
 }
+
+// Match user entered password to hashed password in database
+UserSchema.methods.matchPassword = async function(enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password)
+}
+
+// UserSchema.methods.getConfirmationCode = function() {
+//   const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+//   this.verificationCodeExpire = Date.now() + 15 * 60 * 1000;
+//   return verificationCode;
+// }
 
 module.exports = mongoose.model('User', UserSchema);
