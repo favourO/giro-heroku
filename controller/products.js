@@ -7,16 +7,22 @@ const path = require('path');
 const util = require('util');
 const fs = require('fs');
 const upload = require('../config/uploadAwsBucket');
+const Merchant = require('../model/Merchants');
 
 // Create Product
 // @access        Private
-// @route         /api/v1/giro-app/products
+// @route         /api/v1/giro-app/merchant/:merchantId/product
 exports.createProduct = asyncHandler( async(request, response, next) => {
+    request.body.merchant = request.params.merchantId;
     request.body.user = request.user.id;
 
-    const existingProduct = await Product.findOne({ user: request.user.id })
+    const merchant = await Merchant.findById(request.params.merchantId);
 
-    if (existingProduct && (request.user.role !== 'merchant' || request.user.role !== 'admin')) {
+    if(!merchant) {
+        return next(new ErrorResponse(`No merchant exist with this ID ${request.params.merchantId}`));
+    }
+
+    if (request.user.role !== ('merchant' || 'admin')) {
         return next(new ErrorResponse(`The user with ID ${request.user.id} is not allowed to create a Product`));
     }
     

@@ -25,6 +25,9 @@ exports.createMerchant = asyncHandler( async(request, response, next) => {{
 
     merchant = await Merchant.create(request.body);
 
+    user.role = 'merchant';
+    user.save();
+
     response.status(201).json({
         success: true,
         data: merchant

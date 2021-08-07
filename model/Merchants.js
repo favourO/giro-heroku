@@ -26,6 +26,10 @@ const MerchantSchema = new mongoose.Schema({
       type: String,
       required: [true, 'Please add an address']
     },
+    role: {
+        type: String,
+        required: [true, 'Please a']
+    },
     location: {
         // GeoJSON Point
         type: {
