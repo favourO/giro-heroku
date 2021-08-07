@@ -40,6 +40,9 @@ exports.createProduct = asyncHandler( async(request, response, next) => {
 //@access        Public
 //@route        /api/v1/giro-app/products
 exports.getProducts = asyncHandler( async(request, response, next) => {
+    response.header("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.header("Pragma", "no-cache");
+    response.header("Expires", 0);
     response
     .status(200)
     .json(response.advancedResults);
