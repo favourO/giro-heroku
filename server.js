@@ -8,6 +8,8 @@ const cors = require('cors');
 
 const app = express();
 
+app.use(cors());
+
 // load environment variables using dotenv
 dotenv.config({ path: './config/config.env'});
 
@@ -22,7 +24,7 @@ const merchantRoutes = require('./route/merchantRoutes');
 // Body Parser
 app.use(express.json({ limit: "30mb", extended: true}));
 app.use(express.urlencoded({ limit: "30mb", extended: true}));
-app.use(cors());
+
 
 // images from server
 app.use(express.static('public'));  
