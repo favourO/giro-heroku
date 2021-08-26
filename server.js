@@ -10,6 +10,12 @@ const app = express();
 
 app.use(cors());
 
+// Body Parser
+app.use(express.json({ extended: true}));
+app.use(express.urlencoded({ extended: true}));
+
+app.use(express.static('public'));  
+app.use('/images', express.static('images')); 
 // load environment variables using dotenv
 dotenv.config({ path: './config/config.env'});
 
@@ -21,14 +27,8 @@ const authRoutes = require('./route/userRoutes');
 const productRoutes = require('./route/productRoutes');
 const merchantRoutes = require('./route/merchantRoutes');
 
-// Body Parser
-app.use(express.json({ limit: "30mb", extended: true}));
-app.use(express.urlencoded({ limit: "30mb", extended: true}));
-
 
 // images from server
-app.use(express.static('public'));  
-app.use('/images', express.static('images')); 
 
 // Middleware logging during development
 if (process.env.NODE_ENV === 'development') {
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Mount Route files
 app.use('/api/v1/giro-app/auth', authRoutes);
-app.use('/api/v1/giro-app', productRoutes);
+app.use('/api/v1/giro-app/', productRoutes);
 app.use('/api/v1/giro-app/merchants', merchantRoutes);
 
 // Use error handler
