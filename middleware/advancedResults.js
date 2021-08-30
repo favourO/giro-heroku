@@ -1,3 +1,5 @@
+const { getFileStream } = require('../config/s3')
+
 const advancedResults = (model, populate) => async (request, response, next) => {
     let query;
 

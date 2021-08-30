@@ -32,13 +32,21 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
     metaImageUrl: String,
-    moreImageUrls: [String]
+    moreImageKeys: [String]
 }, 
 {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 })
 
+
+ProductSchema.methods.getImageKeys = function(arrayKeys) {
+    for(let i=0; i< arrayKeys.length; i++){
+        this.moreImageKeys.push(arrayKeys[i])
+    }
+    // this.moreImageKeys.concat(arrayKeys)
+    return this.moreImageKeys
+}
 
 
 module.exports = mongoose.model('Products', ProductSchema);

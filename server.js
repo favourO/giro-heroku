@@ -5,6 +5,13 @@ const errorHandler = require('./middleware/error');
 const colors = require('colors');
 const morgan = require('morgan');
 const cors = require('cors');
+const fileupload = require('express-fileupload');
+
+
+//test
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+
 
 const app = express();
 
@@ -26,6 +33,14 @@ connectDB();
 const authRoutes = require('./route/userRoutes');
 const productRoutes = require('./route/productRoutes');
 const merchantRoutes = require('./route/merchantRoutes');
+
+
+//test
+app.post('/profile', upload.single('avatar'), function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+    console.log(req.file);
+  })
 
 
 // images from server
