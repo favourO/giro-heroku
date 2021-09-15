@@ -141,12 +141,26 @@ const sendTokenResponse = (user, statusCode, response) => {
       options.secure = true
   }
 
+  const userLoginDetails = {
+    success: true,
+    token,
+    role: user.role,
+    status: user.status,
+    emailConfirm: user.isEmailConfirmed,
+    twoFactorEnable: user.twoFactorEnable,
+    id: user._id,
+    username: user.username,
+    email: user.email,
+    phone: user.phone,
+    createdAt: user.createdAt
+  }
   response
       .status(statusCode)
       .cookie('token', token, options)
       .json({
-          success: true,
-          token
+          // success: true,
+          // token,
+          userLoginDetails
       })
 };
 
