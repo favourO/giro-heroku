@@ -1,4 +1,4 @@
-const { request } = require('express');
+const { request, response } = require('express');
 const AwsConfig = require('../config/aws-config');
 const asyncHandler = require('../middleware/async');
 const User = require('../model/User');
@@ -141,26 +141,26 @@ const sendTokenResponse = (user, statusCode, response) => {
       options.secure = true
   }
 
-  const userLoginDetails = {
-    success: true,
-    token,
-    role: user.role,
-    status: user.status,
-    emailConfirm: user.isEmailConfirmed,
-    twoFactorEnable: user.twoFactorEnable,
-    id: user._id,
-    username: user.username,
-    email: user.email,
-    phone: user.phone,
-    createdAt: user.createdAt
-  }
+  // const userLoginDetails = {
+  //   success: true,
+  //   token,
+  //   role: user.role,
+  //   status: user.status,
+  //   emailConfirm: user.isEmailConfirmed,
+  //   twoFactorEnable: user.twoFactorEnable,
+  //   id: user._id,
+  //   username: user.username,
+  //   email: user.email,
+  //   phone: user.phone,
+  //   createdAt: user.createdAt
+  // }
   response
       .status(statusCode)
       .cookie('token', token, options)
       .json({
-          // success: true,
-          // token,
-          userLoginDetails
+          success: true,
+          token,
+          //userLoginDetails
       })
 };
 
@@ -171,6 +171,62 @@ exports.getMe = asyncHandler(async (request, response, next) => {
   const user = await User.findById(request.user.id);
 
   response.status(200).json({
+      success: true,
       user
+  })
+})
+
+
+
+//  @desc   logout current logged in user / clear
+//  @route  POST  /api/v1/auth/logout
+//  @access Private
+exports.logout = asyncHandler(async (request, response, next) => {
+  response.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+})
+
+response.status(200).json({
+    success: true
+  })
+})
+
+
+
+// @desc    Update password
+// @route   PUT /api/v1/auth/updatepassword
+// @access  Private
+exports.updatePassword = asyncHandler(async (request, response, next) => {
+  const user = await User.findById(request.user.id).select('+password');
+
+  // Check current password
+  if(!(await user.matchPassword(request.body.currentPassword))) {
+      return next(new ErrorResponse('Password is incorrect', 401));
+  }
+
+  user.password = request.body.newPassword;
+  await user.save();
+
+  sendTokenResponse(user, 200, response);
+})
+
+
+// @desc    Update user details
+// @route   PUT /api/v1/auth/updatedetails
+// @access  Private
+exports.updateDetails = asyncHandler(async (request, response, next) => {
+  const fieldsToUpdate = {
+      name: request.body.name,
+      email: request.body.email
+  }
+  const user = await User.findByIdUpdate(request.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true
+  });
+
+  response.status(200).json({
+      success: true,
+      data: user
   })
 })
