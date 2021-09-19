@@ -171,7 +171,6 @@ exports.getMe = asyncHandler(async (request, response, next) => {
   const user = await User.findById(request.user.id);
 
   response.status(200).json({
-      success: true,
       user
   })
 })
