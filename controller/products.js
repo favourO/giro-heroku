@@ -32,12 +32,20 @@ exports.createProduct = asyncHandler( async(request, response, next) => {
 
     let file = undefined, result = [], resultkeys = [];
     const fileArray = request.files;
-    for (let i = 0; i < fileArray.length; i++){
-        file = fileArray[i];
-        const uploadResult = await uploadFile(file)
-        result.push(uploadResult)
-        resultkeys.push(uploadResult.Key)
+    if (!fileArray) {
+        response.json({
+            status: false,
+            data: 'add a product image'
+        })
+    } else {
+        for (let i = 0; i < fileArray.length; i++){
+            file = fileArray[i];
+            const uploadResult = await uploadFile(file)
+            result.push(uploadResult)
+            resultkeys.push(uploadResult.Key)
+        }
     }
+    
 
     console.log(request.file)
     console.log(result)
