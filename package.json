@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "prod": "NODE_ENV=production node server",
-    "dev": "nodemon server",
-    "test": "mocha --timeout 10000"
+    "dev": "nodemon server"
   },
   "repository": {
     "type": "git",

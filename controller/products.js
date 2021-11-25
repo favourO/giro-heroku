@@ -46,7 +46,7 @@ exports.createProduct = asyncHandler( async(request, response, next) => {
         }
     }
     
-
+    console.log(uploadResult)
     console.log(request.file)
     console.log(result)
 

@@ -72,4 +72,3 @@ process.on('unhandledRejection', (err, promise) => {
     server.close(() => process.exit(1));
 })
 
-module.exports = app;
