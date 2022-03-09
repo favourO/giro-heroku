@@ -3,3 +3,6 @@ config/config.env
 code.txt
 us-east-2-giro.pem
 mern.jpeg
+npm-debug.log
+/*.env
+.DS_Store
